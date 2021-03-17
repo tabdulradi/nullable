@@ -1,12 +1,19 @@
 inThisBuild(Seq(
-  scalaVersion     := "2.12.8",
-  version          := "0.1.0-SNAPSHOT",
+  version          := "0.2.0-SNAPSHOT",
   organization     := "com.abdulradi",
   organizationName := "nullable",
+
+  scalaVersion     := "3.0.0-RC1",
+  scalacOptions ++= Seq(
+      "-Ykind-projector",
+      "-Yexplicit-nulls",
+      "-source", "future",
+  ),
+
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % "3.0.5" % Test,
-    "org.scalacheck" %% "scalacheck" % "1.14.0" % Test
-  )
+    "org.scalatest" %% "scalatest" % "3.2.6" % Test,
+    "org.scalacheck" %% "scalacheck" % "1.15.3" % Test
+  ),
 ))
 
 lazy val core = (project in file("core"))
@@ -15,8 +22,7 @@ lazy val core = (project in file("core"))
 lazy val root = (project in file("."))
   .settings(name := "nullable")
 
-
-ThisBuild / description := "Wraps nullable values, offers interface similar scala.Option without the allocation cost"
+ThisBuild / description := "Makes nullable values as easy to deal with as scala.Option without the allocation cost"
 ThisBuild / licenses    := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / homepage    := Some(url("https://github.com/tabdulradi/nullable"))
 ThisBuild / scmInfo := Some(

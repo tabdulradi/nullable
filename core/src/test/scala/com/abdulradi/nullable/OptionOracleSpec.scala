@@ -1,7 +1,23 @@
+/*
+ * Copyright 2019-2021 Tamer Abdulradi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use a file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.abdulradi.nullable
 
-import org.scalacheck._, Prop.forAll
-import org.scalactic.TripleEquals._
+import org.scalacheck.*, Prop.forAll
+import org.scalactic.TripleEquals.*
+import syntax.*
 
 object Utils {
   def nullAs[A]: A = null.asInstanceOf[A]
@@ -19,10 +35,10 @@ object Foo {
 }
 
 object OptionOracleSpec extends Properties("String") {
-  import Utils._
-  import Foo._
+  import Utils.*
+  import Foo.*
 
-  property("apply") = forAll { a: Foo =>
+  property("apply") = forAll { (a: Foo) =>
     equivalent(Nullable(a), Option(a))
   }
 
@@ -30,7 +46,7 @@ object OptionOracleSpec extends Properties("String") {
     Nullable(maybeNull).getOrElse(notNull) === Option(maybeNull).getOrElse(notNull)
   }
 
-  property("map") = forAll { a: Foo =>
+  property("map") = forAll { (a: Foo) =>
     equivalent(
       Nullable(a).map(_.str),
       Option(a).map(_.str)
@@ -64,7 +80,7 @@ object OptionOracleSpec extends Properties("String") {
     )
   }
 
-  property("contains") = forAll { a: Foo =>
+  property("contains") = forAll { (a: Foo) =>
     Nullable(a).contains(a) === Option(a).contains(a)
   }
 
@@ -76,7 +92,7 @@ object OptionOracleSpec extends Properties("String") {
     Nullable(a).forall(_ => bool) === Option(a).forall(_ => bool)
   }
 
-  property("foreach") = forAll { a: Foo =>
+  property("foreach") = forAll { (a: Foo) =>
     var n: Option[Foo] = None
     var o: Option[Foo] = None
     Nullable(a).foreach { aa => n = Some(aa) }
@@ -85,7 +101,7 @@ object OptionOracleSpec extends Properties("String") {
     n === o
   }
 
-  property("collect") = forAll { a: Foo => 
+  property("collect") = forAll { (a: Foo) => 
     val pf: PartialFunction[Foo, String] = { 
       case Foo(str) if str.length > 10 => str
     }
@@ -137,30 +153,30 @@ object OptionOracleSpec extends Properties("String") {
     equivalent(na, oa.headOption) && equivalent(nb, ob.headOption) && equivalent(nc, oc.headOption)
   }
 
-  property("iterator") = forAll { a: Foo =>
+  property("iterator") = forAll { (a: Foo) =>
     Nullable(a).iterator.toList === Option(a).iterator.toList
   }
 
-  property("toList") = forAll { a: Foo =>
+  property("toList") = forAll { (a: Foo) =>
     Nullable(a).toList === Option(a).toList
   }
 
-  property("toOption") = forAll { a: Foo =>
+  property("toOption") = forAll { (a: Foo) =>
     Nullable(a).toOption === Option(a)
   }
 
-  property("toRight") = forAll { a: Foo =>
+  property("toRight") = forAll { (a: Foo) =>
     Nullable(a).toRight("") === Option(a).toRight("")
   }
 
-  property("toLeft") = forAll { a: Foo =>
+  property("toLeft") = forAll { (a: Foo) =>
     Nullable(a).toLeft("") === Option(a).toLeft("")
   }
 
-  def equivalent[A <: AnyRef](nullable: Nullable[A], option: Option[A]): Boolean =
+  def equivalent[A <: AnyRef](nullable: A | Null, option: Option[A]): Boolean =
     nullable.isDefined === option.isDefined &&
     nullable.isEmpty === option.isEmpty &&
     nullable.nonEmpty === option.nonEmpty &&
-    nullable.orNull == option.orNull &&
+    nullable == option.orNull &&
     nullable.toOption === option
 }
