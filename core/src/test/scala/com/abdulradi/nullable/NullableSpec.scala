@@ -81,19 +81,48 @@ class NullableSpec extends AnyFunSuite:
     )
   }
 
-  test("GenericsForComprehensionMap"){ 
-    val maybeA: Int | Null = 4
-    // val x = Nullable(4).map(_ => Nullable(5))
-    def useMap[A](f: Int => A): A | Null = 
-      Nullable(4).map(f)
-      // for {
-      //   a <- maybeA
-      // } yield f(a)
+  test("GenericsMap"){ 
+    val maybeInt: Int | Null = 4
+    
+    def useMap[A: NotNull](f: Int => A): A | Null = 
+      maybeInt.map(f)
+    
+    useMap(_ => "")
+  }
+
+  test("GenericsFlatMap"){ 
+    val maybeInt: Int | Null = 4
 
     def useFlatMap[A: Nullable](f: Int => A): A | Null = 
-      Nullable(4).flatMap(f)
+      maybeInt.flatMap(f)
 
-    useMap(_ => null)
+    useFlatMap(_ => null)
+  }
+
+  test("OpaqueMap") {
+    object Foo {
+      opaque type Foo = Int
+      private val notNullInstance = summon[NotNull[Foo]] // Must be defined outside Foo's companion to avoid self reference
+      object Foo {
+        given fooIsNotNull: NotNull[Foo] = notNullInstance // won't compile without this, otherwise we can't proof opaque types isn't a Null or a union type involving Null
+      }
+      val get: Foo = 42
+    }
+
+    Nullable("").map(_ => Foo.get) 
+  }
+
+  test("OpaqueFlatMap") {
+    object Foo {
+      opaque type Foo = Int | Null
+      private val nullableInstance = summon[Nullable[Foo]] // Must be defined outside Foo's companion to avoid self reference
+      object Foo {
+        given fooIsNullable: Nullable[Foo] = nullableInstance // won't compile without this, otherwise we can't proof opaque types isn't a Null or a union type involving Null
+      }
+      val get: Foo = 42
+    }
+
+    Nullable("").flatMap(_ => Foo.get) 
   }
 
   test("NullableZipNullable"){ 

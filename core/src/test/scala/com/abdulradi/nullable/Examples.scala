@@ -59,12 +59,10 @@ object RestOfOptionSyntax:
   maybeA.toOption == optA
   maybeA == optA.orNull
 
-  // Prevents auto flattening // Doesn't compile
+  // Prevents auto flattening (following examples won't even compile)
   // for a <- maybeA yield maybeB // Shows a compile time error suggesting to use flatMap instead
   // maybeA.flatMap(_ => 5) // Shows a compile time error suggesting message to use map instead
   // maybeA.map(_ => null) // Shows a compile time error suggesting to use flatMap instead
   // maybeA.map(_ => maybeB) // Shows a compile time error suggesting to use flatMap instead
-  // def useFlatMapWithoutNullableInScope[A](f: Int => A): A | Null = maybeA.flatMap(f)
-
-  // Shouldn't compile .. yet it does :/ 
-  def useMapWithoutNotNullInScope[A](f: Int => A): A | Null = maybeA.map(f)
+  // def useFlatMapWithoutNullableInScope[A](f: Int => A): A | Null = maybeA.flatMap(f) // Shows a compile time error suggesting to use Nullable typeclass
+  // def useMapWithoutNotNullInScope[A](f: Int => A): A | Null = maybeA.map(f) // Shows a compile time error suggesting to use NotNull typeclass

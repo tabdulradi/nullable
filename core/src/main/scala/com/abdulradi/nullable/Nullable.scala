@@ -15,7 +15,8 @@
  */
 package com.abdulradi.nullable
 
-import scala.compiletime.{erasedValue, error}
+import scala.compiletime.{summonFrom, error, erasedValue}
+import scala.util.NotGiven
 import scala.annotation.implicitNotFound
 
 /* An evidence that a type can be null i.e is a union type like A | Null  */
@@ -34,22 +35,17 @@ object Nullable:
 /* An evidence that a type can't be null i.e isn't a union type like A | Null  */
 @implicitNotFound("${A} seem to be nullable. Use .flatMap instead. \n Note: if ${A} is a generic type argument you need to bound it with a NotNull instance to ensure it isn't a nullable type, here is an example:\n def foo[A, B: NotNull](a: A | Null, f: A => B) = a.map(f)")
 sealed trait NotNull[A]
-// type NotNull[A] = scala.util.NotGiven[Nullable[A]]
 object NotNull:
   // Needed to allow safe map usage
   val dummyInstance: NotNull[Nothing] = new NotNull {}
-  inline given notNullInstance[A](using ev: scala.util.NotGiven[Nullable[A]]): NotNull[A] = 
-    dummyInstance.asInstanceOf[NotNull[A]]
-
-  // inline given nullErrorMessage: NotNull[Null] = 
-  //   error("You can't return null inside map, use flatMap instead")
   
-  // inline given instance[A]: NotNull[A] = 
-  //   inline erasedValue[A] match {
-  //     case _: Null => error("Type seems to be nullable")
-  //     case _: Matchable => error("Type seems to be matchable")
-  //     case _ => NotNull.dummyInstance.asInstanceOf[NotNull[A]]
-  //   }
+  inline given instance[A]: NotNull[A] = 
+    summonFrom {
+      case given Nullable[A] => error("Type seems to be nullable. Use .flatMap instead")
+      case given (A <:< AnyVal) => NotNull.dummyInstance.asInstanceOf[NotNull[A]]
+      case given (A <:< AnyRef) => NotNull.dummyInstance.asInstanceOf[NotNull[A]]
+      case _ => error("Type seems to be a param or opaque, which we can't prove as NotNull. You need to propagate the evidence to the scope, problably something like `def foo[A: NotNull]` or `def foo[A](a: A)(using NotNull[A])`")
+    }
   
 object syntax:
   extension [A](a: A | Null)
