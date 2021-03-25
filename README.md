@@ -2,8 +2,13 @@
 
 Enriches union types `A | Null` with an interface similar scala.Option making it usable inside for comprehensions
 
-## Usage and features
-
+## Usage
+Add the following to your build.sbt
+```
+scalacOptions += "-Yexplicit-nulls"
+libraryDependencies += "com.abdulradi" %% "nullable-core" % "0.1.0"
+```
+## Features
 ### Plays nice with for comprehensions
 
 ``` scala
