@@ -81,19 +81,6 @@ def useMapWithNotNullInScope[A: NotNull](f: Int => A): A | Null =
   maybeA.map(f)
 ```
 
-##### Caution
-
-If you are calling `map` and forgot to use the typeclass, unfortuntely the code will still compile.
-
-``` scala
-def useMapWithNotNullInScope[A](f: Int => A): A | Null = 
-  maybeA.map(f)
-
-useMapWithNotNullInScope(_ => null)
-```
-The code above returns null (won't blow up), but this violates the Monadic laws. If you have a clever idea to catch this corner case at compile time, please reach out on [@tabulradi](https://twitter.com/tabdulradi).
-
-
 ### Lightweight version
 If you only care about for-comprehension features, but not the rest of Option-like methods, we also offer a lightweight syntax
 ```scala
