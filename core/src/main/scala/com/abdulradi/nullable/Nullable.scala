@@ -16,6 +16,7 @@
 package com.abdulradi.nullable
 
 import scala.compiletime.{summonFrom, error, erasedValue}
+import scala.quoted.{Type, Expr, Quotes}
 import scala.util.NotGiven
 import scala.annotation.implicitNotFound
 
@@ -38,13 +39,22 @@ sealed trait NotNull[A]
 object NotNull:
   // Needed to allow safe map usage
   val dummyInstance: NotNull[Nothing] = new NotNull {}
-  
+
+  private def typeNameMacro[A: Type](using Quotes) = Expr(Type.show[A])
+  private transparent inline def typeName[A]: String = ${typeNameMacro[A]}
   inline given instance[A]: NotNull[A] = 
+    inline val A = typeName[A]
     summonFrom {
-      case given Nullable[A] => error("Type seems to be nullable. Use .flatMap instead")
+      case given (Null <:< AnyRef) => error("Compiler flag -Yexplicit-nulls isn't set. This library needs it to function correctly")
+      case given Nullable[A] => error(A + " seems to be nullable. Use .flatMap instead")
       case given (A <:< AnyVal) => NotNull.dummyInstance.asInstanceOf[NotNull[A]]
       case given (A <:< AnyRef) => NotNull.dummyInstance.asInstanceOf[NotNull[A]]
-      case _ => error("Type seems to be a param or opaque, which we can't prove as NotNull. You need to propagate the evidence to the scope, problably something like `def foo[A: NotNull]` or `def foo[A](a: A)(using NotNull[A])`")
+      case _ => 
+        error(
+          A + " seems to be a param or opaque, which we can't prove as NotNull.\n" +
+          "You need to propagate given NotNull[" + A + "] in the scope, problably something like:\n" + 
+          "`def foo[" + A + ": NotNull]` or `def foo[" + A + "](a: " + A + ")(using NotNull[" + A + "])`"
+        )
     }
   
 object syntax:
