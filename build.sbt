@@ -29,7 +29,7 @@ inThisBuild(Seq(
     )
   ),
 
-  scalaVersion := "3.0.0-RC1",
+  scalaVersion := "3.0.0-RC2",
   scalacOptions ++= Seq(
       "-Ykind-projector",
       "-Yexplicit-nulls",
