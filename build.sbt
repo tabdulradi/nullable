@@ -35,11 +35,11 @@ inThisBuild(Seq(
       "-Yexplicit-nulls",
       "-source", "future",
   ),
-
-  libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % "3.2.6" % Test,
-    "org.scalacheck" %% "scalacheck" % "1.15.3" % Test
-  ),
+  // Scala Test isn't released yet to Scala3 RC2, but the tests pass on RC1, I promise!
+  // libraryDependencies ++= Seq(
+  //   "org.scalatest" %% "scalatest" % "3.2.6" % Test,
+  //   "org.scalacheck" %% "scalacheck" % "1.15.3" % Test
+  // ),
 ))
 
 lazy val core = (project in file("core"))
