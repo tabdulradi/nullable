@@ -6,8 +6,10 @@ Enriches union types `A | Null` with an interface similar scala.Option making it
 Add the following to your build.sbt
 ```
 scalacOptions += "-Yexplicit-nulls"
-libraryDependencies += "com.abdulradi" %% "nullable-core" % "0.1.0"
+libraryDependencies += "com.abdulradi" %% "nullable-core" % "0.3.0"
 ```
+0.3.0 is published for Scala 3 RC2 only ( If you are still in RC1, please use 0.2.0 instead)
+
 ## Features
 ### Plays nice with for comprehensions
 
