@@ -4,7 +4,7 @@ inThisBuild(Seq(
   homepage         := Some(url("https://github.com/tabdulradi/nullable")),
   scmInfo          := Some(ScmInfo(url("https://github.com/tabdulradi/nullable"), "scm:git@github.com:tabdulradi/nullable.git")),
 
-  scalaVersion := "3.0.0-RC2",
+  scalaVersion := "3.0.0-RC3",
   
   libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % "3.2.7" % Test,
