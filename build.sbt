@@ -4,11 +4,11 @@ inThisBuild(Seq(
   homepage         := Some(url("https://github.com/tabdulradi/nullable")),
   scmInfo          := Some(ScmInfo(url("https://github.com/tabdulradi/nullable"), "scm:git@github.com:tabdulradi/nullable.git")),
 
-  scalaVersion := "3.0.0-RC2",
+  scalaVersion := "3.0.0",
   
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % "3.2.7" % Test,
-    "org.scalacheck" %% "scalacheck" % "1.15.3" % Test
+    "org.scalatest" %% "scalatest" % "3.2.9" % Test,
+    "org.scalacheck" %% "scalacheck" % "1.15.4" % Test
   ),
 ))
 
@@ -19,5 +19,5 @@ lazy val root = (project in file("."))
   .aggregate(core)
   .settings(
     name := "nullable",
-    skip in publish := true
+    publish / skip := true
   )
