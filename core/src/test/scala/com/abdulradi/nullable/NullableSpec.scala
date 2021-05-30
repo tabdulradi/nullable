@@ -126,16 +126,16 @@ class NullableSpec extends AnyFunSuite:
   }
 
   test("NullableZipNullable"){ 
-    assertEquals(Nullable("foo") zip Nullable("bar"), Nullable(("foo", "bar")))
+    assertEquals(Nullable("foo").zip(Nullable("bar")), Nullable(("foo", "bar")))
   }
   test("NullableZipNullable.empty"){   
-    assertEquals(Nullable("foo") zip Nullable.empty[String], null)
+    assertEquals(Nullable("foo").zip(Nullable.empty[String]), null)
   }
   test("Nullable.emptyZipNullable"){ 
-    assertEquals(Nullable.empty zip Nullable("bar"), null)
+    assertEquals(Nullable.empty.zip(Nullable("bar")), null)
   }
   test("Nullable.emptyZipNullable.empty"){ 
-    assertEquals(Nullable.empty zip Nullable.empty, null)
+    assertEquals(Nullable.empty.zip(Nullable.empty), null)
   }
 
   test("NullableUnzipToNullablePair"){ 
